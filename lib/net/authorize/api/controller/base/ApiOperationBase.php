@@ -39,6 +39,8 @@ abstract class ApiOperationBase implements IApiOperation
      */
     public $httpClient = null;
     private $logger = null;
+    private $httpClientTimeout = 45;
+    
     /**
      * Constructor.
      *
@@ -94,6 +96,10 @@ abstract class ApiOperationBase implements IApiOperation
     {
         return $this->apiResponse;
     }
+    
+    public function setHttpClientTimeout($value) {
+        $this->httpClientTimeout = $value;
+    }
 
     /**
      * Sends request and retrieves response
@@ -125,6 +131,7 @@ abstract class ApiOperationBase implements IApiOperation
 	
         $this->logger->info("Request  Creation End");
 
+        $this->httpClient->setTimeout($this->httpClientTimeout);
         $this->httpClient->setPostUrl( $endPoint);
         /*$xmlResponse = $this->httpClient->_sendRequest($xmlRequest);
         if ( null == $xmlResponse)

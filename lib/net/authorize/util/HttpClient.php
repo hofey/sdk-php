@@ -17,6 +17,11 @@ class HttpClient
     public $VERIFY_PEER = true; // attempt trust validation of SSL certificates when establishing secure connections.
     private $logger = NULL;
     /**
+     * @var int
+     */
+    private $timeout = 45;
+    
+    /**
      * Constructor.
      *
      */
@@ -53,6 +58,13 @@ class HttpClient
     {
         $this->logger->setLogFile($filepath);
     }
+    
+    /**
+     * @param int $timeout
+     */
+    public function setTimeout($timeout) {
+        $this->timeout = $timeout;
+    }
 
     /**
      * Posts the request to AuthorizeNet endpoint using Curl & returns response.
@@ -62,13 +74,14 @@ class HttpClient
      */
     public function _sendRequest($xmlRequest)
     {
+        
         $xmlResponse = "";
 
         $post_url = $this->_getPostUrl();
         $curl_request = curl_init($post_url);
         curl_setopt($curl_request, CURLOPT_POSTFIELDS, $xmlRequest);
         curl_setopt($curl_request, CURLOPT_HEADER, 0);
-        curl_setopt($curl_request, CURLOPT_TIMEOUT, 45);
+        curl_setopt($curl_request, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($curl_request, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl_request, CURLOPT_SSL_VERIFYHOST, 2);
 
